@@ -65,6 +65,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,3 +97,7 @@ STATIC_URL = 'static/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+MAX_FIELD_LENGTH: int = 255
+ADMIN_CHARS_LIMIT: int = 30
