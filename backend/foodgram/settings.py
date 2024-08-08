@@ -110,5 +110,21 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+DJOSER = {
+    'HIDE_USERS': False,
+    'PERMISSIONS': {
+        'user_list': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
+        'user': ('foodgram.permissions.CustomPermissions',),
+    },
+
+    'SERIALIZERS': {
+        'user': 'users.serializers.UserCustomSerializer',
+        'current_user': 'users.serializers.UserCustomSerializer',
+    },
+
+    'LOGIN_FIELD': 'email',
+}
+
 MAX_FIELD_LENGTH: int = 255
 ADMIN_CHARS_LIMIT: int = 30
+PAGE_SIZE_PAGINATION: int = 5
