@@ -10,6 +10,9 @@ class User(AbstractUser):
     ADMIN = 'admin'
     USER = 'user'
     ROLE_CHOICES = ((USER, 'Пользователь'), (ADMIN, 'Администратор'))
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+
     first_name = models.CharField(
         'Имя',
         max_length=settings.MAX_FIELD_LENGTH,
