@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from subscriptions.models import Subscription
 from subscriptions.serializers import (ListSubscriptionsSerialaizer,
                                        SubscriptionsGetSerializer)
-from users.pagination import PageLimitPagination
+from utils.pagination import PageLimitPagination
 from users.serializers import UserAvatarSerializer, UserCustomSerializer
 
 User = get_user_model()
