@@ -17,12 +17,11 @@ class Subscription(models.Model):
         related_name='following',
         verbose_name='Автор',
     )
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'подписка'
         verbose_name_plural = 'Подписки'
-        ordering = ('-created_at',)
+        ordering = ('-id',)
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'author'],
