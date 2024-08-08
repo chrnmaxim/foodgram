@@ -8,9 +8,13 @@ class Favorite(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
+        verbose_name='Пользователь'
     )
     recipe = models.ForeignKey(
-        'recipes.Recipe', on_delete=models.CASCADE, related_name='favorite'
+        'recipes.Recipe',
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        verbose_name='Рецепт'
     )
     pub_date = models.DateTimeField(auto_now_add=True)
 
