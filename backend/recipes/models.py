@@ -1,10 +1,7 @@
 from django.conf import settings
+from django.core.validators import (FileExtensionValidator, MaxValueValidator,
+                                    MinValueValidator)
 from django.db import models
-from django.core.validators import (
-    FileExtensionValidator,
-    MaxValueValidator,
-    MinValueValidator,
-)
 
 from ingredients.models import IngredientInRecipe
 from tags.models import Tag
@@ -16,28 +13,23 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name='Автор'
+        verbose_name='Автор',
     )
-    name = models.CharField(
-        'Название',
-        max_length=settings.MAX_FIELD_LENGTH
-    )
-    text = models.TextField(
-        'Основной текст'
-    )
+    name = models.CharField('Название', max_length=settings.MAX_FIELD_LENGTH)
+    text = models.TextField('Основной текст')
     tags = models.ManyToManyField(
         Tag,
         related_name="tags",
         blank=True,
         db_index=True,
-        verbose_name='Теги'
+        verbose_name='Теги',
     )
     ingredients = models.ManyToManyField(
         IngredientInRecipe,
         related_name="recipes",
         blank=True,
         db_index=True,
-        verbose_name='Ингредиенты'
+        verbose_name='Ингредиенты',
     )
     image = models.ImageField(
         'Изображение',
@@ -50,10 +42,15 @@ class Recipe(models.Model):
     )
 
     cooking_time = models.PositiveIntegerField(
-        'Время приготовления',
+        'Время приготовления, мин',
         validators=[
-            MinValueValidator(10),
-            MaxValueValidator(60 * 24),
+            MinValueValidator(
+                1, message='Время приготовления не может быть менее 1 минуты.'
+            ),
+            MaxValueValidator(
+                60 * 48,
+                message='Время приготовления не может быть более 2-х суток.',
+            ),
         ],
         db_index=True,
     )
@@ -65,9 +62,30 @@ class Recipe(models.Model):
 
         verbose_name = 'рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ('id',)
+        ordering = ('-pub_date',)
 
     def __str__(self):
         """Определяет отображение название рецепта в админ-панели."""
 
-        return self.name[:settings.ADMIN_CHARS_LIMIT]
+        return self.name[: settings.ADMIN_CHARS_LIMIT]
+
+
+class ShoppingCartIngredients(models.Model):
+    """Модель рецептов в списке покупок."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        related_name='user_shopping',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        verbose_name='Рецепт',
+        related_name='recipe_download',
+    )
+
+    class Meta:
+        verbose_name = 'рецепт в списке покупок'
+        verbose_name_plural = 'Рецепты в списке покупок'

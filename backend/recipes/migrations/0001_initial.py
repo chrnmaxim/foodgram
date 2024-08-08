@@ -8,19 +8,55 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Recipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Название')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(max_length=255, verbose_name='Название'),
+                ),
                 ('text', models.TextField(verbose_name='Основной текст')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='media/', validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png'])], verbose_name='Изображение')),
-                ('cooking_time', models.PositiveIntegerField(db_index=True, validators=[django.core.validators.MinValueValidator(10), django.core.validators.MaxValueValidator(1440)], verbose_name='Время приготовления')),
-                ('pub_date', models.DateTimeField(auto_now_add=True, db_index=True)),
+                (
+                    'image',
+                    models.ImageField(
+                        blank=True,
+                        null=True,
+                        upload_to='media/',
+                        validators=[
+                            django.core.validators.FileExtensionValidator(
+                                allowed_extensions=['jpg', 'jpeg', 'png']
+                            )
+                        ],
+                        verbose_name='Изображение',
+                    ),
+                ),
+                (
+                    'cooking_time',
+                    models.PositiveIntegerField(
+                        db_index=True,
+                        validators=[
+                            django.core.validators.MinValueValidator(10),
+                            django.core.validators.MaxValueValidator(1440),
+                        ],
+                        verbose_name='Время приготовления',
+                    ),
+                ),
+                (
+                    'pub_date',
+                    models.DateTimeField(auto_now_add=True, db_index=True),
+                ),
                 ('updated_at', models.DateTimeField(auto_now=True)),
             ],
             options={

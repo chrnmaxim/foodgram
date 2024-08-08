@@ -20,16 +20,32 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='recipe',
             name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Автор'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='Автор',
+            ),
         ),
         migrations.AddField(
             model_name='recipe',
             name='ingredients',
-            field=models.ManyToManyField(blank=True, db_index=True, related_name='recipes', to='ingredients.ingredientinrecipe', verbose_name='Ингредиенты'),
+            field=models.ManyToManyField(
+                blank=True,
+                db_index=True,
+                related_name='recipes',
+                to='ingredients.ingredientinrecipe',
+                verbose_name='Ингредиенты',
+            ),
         ),
         migrations.AddField(
             model_name='recipe',
             name='tags',
-            field=models.ManyToManyField(blank=True, db_index=True, related_name='tags', to='tags.tag', verbose_name='Теги'),
+            field=models.ManyToManyField(
+                blank=True,
+                db_index=True,
+                related_name='tags',
+                to='tags.tag',
+                verbose_name='Теги',
+            ),
         ),
     ]

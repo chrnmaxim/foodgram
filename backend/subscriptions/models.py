@@ -17,22 +17,21 @@ class Subscription(models.Model):
         related_name='following',
         verbose_name='Автор',
     )
-    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'подписка'
         verbose_name_plural = 'Подписки'
-        ordering = ('-created_at',)
+        ordering = ('-id',)
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_following'
+                fields=['user', 'author'], name='unique_following'
             ),
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),
                 name='same_follower_constraint',
-                violation_error_message=('Пользователь не может подписаться '
-                                         'на самого себя.')
+                violation_error_message=(
+                    'Пользователь не может подписаться ' 'на самого себя.'
+                ),
             ),
         ]
 

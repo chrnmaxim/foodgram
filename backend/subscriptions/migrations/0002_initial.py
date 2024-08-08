@@ -18,19 +18,35 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subscription',
             name='author',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='following', to=settings.AUTH_USER_MODEL, verbose_name='Автор'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='following',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='Автор',
+            ),
         ),
         migrations.AddField(
             model_name='subscription',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='follower', to=settings.AUTH_USER_MODEL, verbose_name='Подписчик'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='follower',
+                to=settings.AUTH_USER_MODEL,
+                verbose_name='Подписчик',
+            ),
         ),
         migrations.AddConstraint(
             model_name='subscription',
-            constraint=models.UniqueConstraint(fields=('user', 'author'), name='unique_following'),
+            constraint=models.UniqueConstraint(
+                fields=('user', 'author'), name='unique_following'
+            ),
         ),
         migrations.AddConstraint(
             model_name='subscription',
-            constraint=models.CheckConstraint(check=models.Q(('user', models.F('author')), _negated=True), name='same_follower_constraint', violation_error_message='Пользователь не может подписаться на самого себя.'),
+            constraint=models.CheckConstraint(
+                check=models.Q(('user', models.F('author')), _negated=True),
+                name='same_follower_constraint',
+                violation_error_message='Пользователь не может подписаться на самого себя.',
+            ),
         ),
     ]
