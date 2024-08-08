@@ -27,7 +27,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'ingredients.apps.IngredientsConfig',
     'tags.apps.TagsConfig',
-    'follow.apps.FollowConfig'
+    'follow.apps.FollowConfig',
+    'favorite.apps.FavoriteConfig'
 ]
 
 MIDDLEWARE = [
