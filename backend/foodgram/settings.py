@@ -17,12 +17,19 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default='localhost')
 
 
 INSTALLED_APPS = [
+    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Сторонние библиотеки
+    'rest_framework',
+    'djoser',
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    # Приложения проекта
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
     'ingredients.apps.IngredientsConfig',
