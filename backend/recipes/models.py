@@ -13,28 +13,23 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name='Автор'
+        verbose_name='Автор',
     )
-    name = models.CharField(
-        'Название',
-        max_length=settings.MAX_FIELD_LENGTH
-    )
-    text = models.TextField(
-        'Основной текст'
-    )
+    name = models.CharField('Название', max_length=settings.MAX_FIELD_LENGTH)
+    text = models.TextField('Основной текст')
     tags = models.ManyToManyField(
         Tag,
         related_name="tags",
         blank=True,
         db_index=True,
-        verbose_name='Теги'
+        verbose_name='Теги',
     )
     ingredients = models.ManyToManyField(
         IngredientInRecipe,
         related_name="recipes",
         blank=True,
         db_index=True,
-        verbose_name='Ингредиенты'
+        verbose_name='Ингредиенты',
     )
     image = models.ImageField(
         'Изображение',
@@ -50,12 +45,11 @@ class Recipe(models.Model):
         'Время приготовления, мин',
         validators=[
             MinValueValidator(
-                1,
-                message='Время приготовления не может быть менее 1 минуты.'
+                1, message='Время приготовления не может быть менее 1 минуты.'
             ),
             MaxValueValidator(
                 60 * 48,
-                message='Время приготовления не может быть более 2-х суток.'
+                message='Время приготовления не может быть более 2-х суток.',
             ),
         ],
         db_index=True,
@@ -73,7 +67,7 @@ class Recipe(models.Model):
     def __str__(self):
         """Определяет отображение название рецепта в админ-панели."""
 
-        return self.name[:settings.ADMIN_CHARS_LIMIT]
+        return self.name[: settings.ADMIN_CHARS_LIMIT]
 
 
 class ShoppingCartIngredients(models.Model):
@@ -83,7 +77,7 @@ class ShoppingCartIngredients(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='user_shopping'
+        related_name='user_shopping',
     )
     recipe = models.ForeignKey(
         Recipe,

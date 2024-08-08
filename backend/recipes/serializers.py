@@ -10,7 +10,6 @@ from ingredients.serializer import (AddIngredientSerializer,
 from recipes.models import Recipe, ShoppingCartIngredients
 from tags.models import Tag
 from tags.serializer import TagsSerializer
-from users.models import User
 from users.serializers import UserCustomSerializer
 
 
@@ -45,8 +44,7 @@ class RecipesSerializerGet(serializers.ModelSerializer):
         if request is None or request.user.is_anonymous:
             return False
         return Favorite.objects.filter(
-            user=request.user,
-            recipe_id=data.id
+            user=request.user, recipe_id=data.id
         ).exists()
 
     def get_is_in_shopping_cart(self, data):
@@ -54,8 +52,7 @@ class RecipesSerializerGet(serializers.ModelSerializer):
         if request is None or request.user.is_anonymous:
             return False
         return ShoppingCartIngredients.objects.filter(
-            user=request.user,
-            recipe_id=data.id
+            user=request.user, recipe_id=data.id
         ).exists()
 
 
@@ -71,8 +68,13 @@ class RecipesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'id', 'image', 'name', 'text', 'cooking_time',
-            'ingredients', 'tags',
+            'id',
+            'image',
+            'name',
+            'text',
+            'cooking_time',
+            'ingredients',
+            'tags',
         )
         extra_kwargs = {'image': {'required': True}}
 
@@ -105,23 +107,15 @@ class RecipesSerializer(serializers.ModelSerializer):
 
     def validate(self, value):
         if not value.get('image'):
-            raise serializers.ValidationError(
-                'Изображение не добавлено.'
-            )
+            raise serializers.ValidationError('Изображение не добавлено.')
         tags = value.get('tags')
         ingredients = value.get('ingredients')
         if not tags:
-            raise serializers.ValidationError(
-                'Теги не указаны.'
-            )
+            raise serializers.ValidationError('Теги не указаны.')
         if not ingredients:
-            raise serializers.ValidationError(
-                'Ингредиенты не добавлены.'
-            )
+            raise serializers.ValidationError('Ингредиенты не добавлены.')
         if len(set(tags)) != len(tags):
-            raise serializers.ValidationError(
-                'Теги не должны повторяться.'
-            )
+            raise serializers.ValidationError('Теги не должны повторяться.')
         list_id_ingredients = [ingredient['id'] for ingredient in ingredients]
         if len(list_id_ingredients) != len(set(list_id_ingredients)):
             raise serializers.ValidationError(
@@ -159,7 +153,7 @@ class ShoppingCartIngredientsSerializer(serializers.ModelSerializer):
         validators = (
             UniqueTogetherValidator(
                 queryset=ShoppingCartIngredients.objects.all(),
-                fields=('user', 'recipe')
+                fields=('user', 'recipe'),
             ),
         )
 

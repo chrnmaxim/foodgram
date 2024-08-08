@@ -24,14 +24,14 @@ class Subscription(models.Model):
         ordering = ('-id',)
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_following'
+                fields=['user', 'author'], name='unique_following'
             ),
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),
                 name='same_follower_constraint',
-                violation_error_message=('Пользователь не может подписаться '
-                                         'на самого себя.')
+                violation_error_message=(
+                    'Пользователь не может подписаться ' 'на самого себя.'
+                ),
             ),
         ]
 

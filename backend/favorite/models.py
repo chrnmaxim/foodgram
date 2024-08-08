@@ -8,13 +8,13 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name='Пользователь'
+        verbose_name='Пользователь',
     )
     recipe = models.ForeignKey(
         'recipes.Recipe',
         on_delete=models.CASCADE,
         related_name='favorite',
-        verbose_name='Рецепт'
+        verbose_name='Рецепт',
     )
 
     class Meta:
@@ -23,5 +23,6 @@ class Favorite(models.Model):
         ordering = ('-id',)
 
     def __str__(self):
-        return (f'{self.user.username} добавил в '
-                f'избранное {self.recipe.name}')
+        return (
+            f'{self.user.username} добавил в ' f'избранное {self.recipe.name}'
+        )

@@ -30,9 +30,7 @@ class UserCustomSerializer(serializers.ModelSerializer):
         user = self.context.get('request')
         if not user or user.user.is_anonymous:
             return False
-        return Subscription.objects.filter(
-            user=user.user, author=obj
-        ).exists()
+        return Subscription.objects.filter(user=user.user, author=obj).exists()
 
 
 class UserAvatarSerializer(UserCustomSerializer):

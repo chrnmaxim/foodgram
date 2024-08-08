@@ -27,10 +27,12 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
         detail=False,
         methods=['GET'],
         permission_classes=[IsAuthenticated],
-        url_path='me'
+        url_path='me',
     )
     def me(self, request):
-        serializer = UserCustomSerializer(request.user, context={"request": request})
+        serializer = UserCustomSerializer(
+            request.user, context={"request": request}
+        )
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @action(
@@ -62,21 +64,21 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
         methods=['POST', 'DELETE'],
         permission_classes=(IsAuthenticated,),
         serializer_class=ListSubscriptionsSerialaizer,
-        pagination_class=PageLimitPagination
+        pagination_class=PageLimitPagination,
     )
     def subscribe(self, request, pk=None):
         author = request.user
         subscription_on = get_object_or_404(User, id=pk)
         sibscribe = Subscription.objects.filter(
-            author=author.id,
-            subscription_on=subscription_on.id
+            author=author.id, subscription_on=subscription_on.id
         )
         if request.method == 'POST':
             serializer = ListSubscriptionsSerialaizer(
                 data={
                     'author': author.id,
-                    'subscription_on': subscription_on.id
-                }, context={'request': request}
+                    'subscription_on': subscription_on.id,
+                },
+                context={'request': request},
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -96,7 +98,6 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
         queryset = User.objects.filter(subscription_on__author=request.user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscriptionsGetSerializer(
-            pages, many=True,
-            context={'request': request}
+            pages, many=True, context={'request': request}
         )
         return self.get_paginated_response(serializer.data)

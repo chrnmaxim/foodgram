@@ -14,9 +14,7 @@ User = get_user_model()
 class SubscriptionsGetSerializer(UserCustomSerializer):
     """Сериализатор получения подписок."""
 
-    recipes = serializers.SerializerMethodField(
-        'get_recipes', read_only=True
-    )
+    recipes = serializers.SerializerMethodField('get_recipes', read_only=True)
     recipes_count = serializers.SerializerMethodField(
         'get_recipes_count', read_only=True
     )
@@ -28,8 +26,11 @@ class SubscriptionsGetSerializer(UserCustomSerializer):
             'recipes_count',
         )
         read_only_fields = (
-            'email', 'username', 'first_name',
-            'last_name', 'avatar'
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'avatar',
         )
 
     def get_recipes_count(self, data):
@@ -40,7 +41,7 @@ class SubscriptionsGetSerializer(UserCustomSerializer):
         recipes = data.user.all()
         recipes_limit = request.GET.get('recipes_limit')
         if recipes_limit:
-            recipes = recipes[:int(recipes_limit)]
+            recipes = recipes[: int(recipes_limit)]
         serializer = ShortRecipeSerializer(recipes, many=True)
         return serializer.data
 
@@ -53,8 +54,7 @@ class ListSubscriptionsSerialaizer(serializers.ModelSerializer):
         model = Subscription
         validators = (
             UniqueTogetherValidator(
-                queryset=Subscription.objects.all(),
-                fields=('user', 'author')
+                queryset=Subscription.objects.all(), fields=('user', 'author')
             ),
         )
 
@@ -68,5 +68,5 @@ class ListSubscriptionsSerialaizer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return SubscriptionsGetSerializer(
             instance.subscription_on,
-            context={'request': self.context.get('request')}
+            context={'request': self.context.get('request')},
         ).data

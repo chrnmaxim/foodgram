@@ -1,5 +1,3 @@
-from django.db import transaction
-from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -15,8 +13,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         model = Favorite
         validators = (
             UniqueTogetherValidator(
-                queryset=Favorite.objects.all(),
-                fields=('user', 'recipe')
+                queryset=Favorite.objects.all(), fields=('user', 'recipe')
             ),
         )
 

@@ -7,9 +7,7 @@ from ingredients.models import Ingredient, IngredientInRecipe, Unit
 class IngredientAdmin(admin.ModelAdmin):
     """Определяет отображение ингредиентов в панели администратора."""
 
-    list_display = (
-        'name',
-    )
+    list_display = ('name',)
     search_fields = ('name',)
     empty_value_display = '-пусто-'
 
@@ -18,9 +16,7 @@ class IngredientAdmin(admin.ModelAdmin):
 class UnitAdmin(admin.ModelAdmin):
     """Определяет отображение единицы измерения в панели администратора."""
 
-    list_display = (
-        'name',
-    )
+    list_display = ('name',)
     search_fields = ('name',)
     empty_value_display = '-пусто-'
 

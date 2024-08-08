@@ -7,8 +7,6 @@ from tags.models import Tag
 class TagAdmin(admin.ModelAdmin):
     """Определяет отображение тегов в панели администратора."""
 
-    list_display = (
-        'name',
-    )
+    list_display = ('name',)
     search_fields = ('name',)
     empty_value_display = '-пусто-'

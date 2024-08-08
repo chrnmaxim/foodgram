@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     'ingredients.apps.IngredientsConfig',
     'tags.apps.TagsConfig',
     'favorite.apps.FavoriteConfig',
-    'subscriptions.apps.SubscriptionsConfig'
+    'subscriptions.apps.SubscriptionsConfig',
 ]
 
 MIDDLEWARE = [
@@ -116,12 +116,10 @@ DJOSER = {
         'user_list': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
         'user': ('foodgram.permissions.CustomPermissions',),
     },
-
     'SERIALIZERS': {
         'user': 'users.serializers.UserCustomSerializer',
         'current_user': 'users.serializers.UserCustomSerializer',
     },
-
     'LOGIN_FIELD': 'email',
 }
 

@@ -16,9 +16,27 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, unique=True, verbose_name='Название')),
-                ('slug', models.SlugField(max_length=255, unique=True, verbose_name='Слаг')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(
+                        max_length=255, unique=True, verbose_name='Название'
+                    ),
+                ),
+                (
+                    'slug',
+                    models.SlugField(
+                        max_length=255, unique=True, verbose_name='Слаг'
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'тег',
@@ -29,9 +47,32 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TagInRecipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tags_in_recipe', to='recipes.recipe')),
-                ('tag', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tags_in_recipe', to='tags.tag')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'recipe',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='tags_in_recipe',
+                        to='recipes.recipe',
+                    ),
+                ),
+                (
+                    'tag',
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='tags_in_recipe',
+                        to='tags.tag',
+                    ),
+                ),
             ],
         ),
     ]
