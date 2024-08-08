@@ -52,9 +52,9 @@ class RecipesViewSet(viewsets.ModelViewSet):
         filename = f'{user.email}ingredients.txt'
         content = '\n'.join(
             [
-                f'{ingredient['ingredient__name']} -'
-                f' {ingredient['amount']}'
-                f' {ingredient['ingredient__measurement_unit__name']}'
+                f'{ingredient["ingredient__name"]} -'
+                f' {ingredient["amount"]}'
+                f' {ingredient["ingredient__measurement_unit__name"]}'
                 for ingredient in list_recipes
             ]
         )
