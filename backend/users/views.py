@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
@@ -9,8 +8,8 @@ from rest_framework.response import Response
 from subscriptions.models import Subscription
 from subscriptions.serializers import (ListSubscriptionsSerialaizer,
                                        SubscriptionsGetSerializer)
-from utils.pagination import PageLimitPagination
 from users.serializers import UserAvatarSerializer, UserCustomSerializer
+from utils.pagination import PageLimitPagination
 
 User = get_user_model()
 
