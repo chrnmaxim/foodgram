@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 
 
-class Follow(models.Model):
+class Subscription(models.Model):
     """Модель подписки на пользователя."""
 
     user = models.ForeignKey(
