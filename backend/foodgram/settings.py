@@ -25,9 +25,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Сторонние библиотеки
+    'django_filters',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
-    'rest_framework_simplejwt',
     'drf_yasg',
     # Приложения проекта
     'recipes.apps.RecipesConfig',
