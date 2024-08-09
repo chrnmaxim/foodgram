@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from favorite.models import Favorite
 from favorite.serializers import FavoriteSerializer
 from ingredients.models import IngredientInRecipe
-from recipes.models import Recipe
+from recipes.models import Recipe, ShoppingCartIngredients
 from recipes.serializers import (RecipesSerializer, RecipesSerializerGet,
                                  ShoppingCartIngredientsSerializer)
 from utils.filters import RecipeFilter
@@ -72,7 +72,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
-        shopping_cart = ShoppingCartIngredientsSerializer.objects.filter(
+        shopping_cart = ShoppingCartIngredients.objects.filter(
             user=user.id, recipe=recipe
         )
         if request.method == 'POST':

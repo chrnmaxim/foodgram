@@ -14,6 +14,7 @@ class Recipe(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         verbose_name='Автор',
+        related_name='user',
     )
     name = models.CharField('Название', max_length=settings.MAX_FIELD_LENGTH)
     text = models.TextField('Основной текст')
@@ -33,7 +34,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         'Изображение',
-        upload_to='media/',
+        upload_to='recipes/images/',
         blank=True,
         null=True,
         validators=[

@@ -103,7 +103,7 @@ class User(AbstractUser, PermissionsMixin):
         default=USER,
     )
     avatar = models.ImageField(
-        upload_to='media/',
+        upload_to='users/images/',
         blank=True,
         null=True,
         validators=[
