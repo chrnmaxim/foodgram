@@ -3,6 +3,7 @@ version: '3.9'
 volumes:
   pg_data:
   static:
+  media:
 
 services:
   db:
@@ -21,6 +22,7 @@ services:
     env_file: .env
     volumes: 
       - static:/backend_static
+      - media:/media/
     depends_on:
       db:
         condition: service_healthy
@@ -36,6 +38,7 @@ services:
     build: ./nginx/
     volumes:
       - static:/staticfiles/
+      - media:/media/
     ports:
       - 8000:80
     depends_on:
