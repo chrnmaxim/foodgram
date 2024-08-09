@@ -3,12 +3,15 @@ import csv
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.db import IntegrityError
+from tags.models import Tag
 from ingredients.models import Ingredient, Unit
 
 
 DATA_FORMAT = {
     'measurement_unit': 'measurement_unit_id',
     'ingredient_name': 'name',
+    'name': 'name',
+    'slug': 'slug'
 }
 
 
@@ -46,6 +49,31 @@ class Command(BaseCommand):
         except (ValueError, IntegrityError) as error:
             self.stdout.write(
                 self.style.ERROR(f'Ошибка данных в файле ingredients.csv . {error}.')
+            )
+        else:
+            self.stdout.write(
+                self.style.SUCCESS('Все данные успешно загружены.')
+            )
+
+        try:
+            with open(
+                os.path.join(settings.CSV_DIR, 'tags.csv'),
+                encoding='utf8'
+            ) as datafile:
+                data = csv.DictReader(datafile)
+                list_tags = []
+                for cursor in data:
+                    args = dict(**cursor)
+                    list_tags.append(Tag(**args))
+                Tag.objects.bulk_create(
+                    list_tags, ignore_conflicts=True)
+        except FileNotFoundError:
+            self.stdout.write(
+                self.style.ERROR('Файл tags.csv не найден.')
+            )
+        except (ValueError, IntegrityError) as error:
+            self.stdout.write(
+                self.style.ERROR(f'Ошибка данных в файле tags.csv . {error}.')
             )
         else:
             self.stdout.write(
