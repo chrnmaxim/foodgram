@@ -94,7 +94,7 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
         pagination_class=PageLimitPagination,
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(author__user=request.user)
+        queryset = User.objects.filter(following__user=request.user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscriptionsGetSerializer(
             pages, many=True, context={'request': request}
