@@ -66,24 +66,24 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
         pagination_class=PageLimitPagination,
     )
     def subscribe(self, request, pk=None):
-        author = request.user
-        subscription_on = get_object_or_404(User, id=pk)
-        sibscribe = Subscription.objects.filter(
-            author=author.id, subscription_on=subscription_on.id
+        user = request.user
+        author = get_object_or_404(User, id=pk)
+        subscribe = Subscription.objects.filter(
+            user=user.id, author=author.id
         )
         if request.method == 'POST':
             serializer = ListSubscriptionsSerialaizer(
                 data={
+                    'user': user.id,
                     'author': author.id,
-                    'subscription_on': subscription_on.id,
                 },
                 context={'request': request},
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if sibscribe.exists():
-            sibscribe.delete()
+        if subscribe.exists():
+            subscribe.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -94,7 +94,7 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
         pagination_class=PageLimitPagination,
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(subscription_on__author=request.user)
+        queryset = User.objects.filter(author__user=request.user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscriptionsGetSerializer(
             pages, many=True, context={'request': request}
