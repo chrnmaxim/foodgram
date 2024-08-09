@@ -1,3 +1,5 @@
+import os
+
 from pathlib import Path
 
 import environ
@@ -5,7 +7,7 @@ import environ
 env = environ.Env()
 environ.Env.read_env('../.env')
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 SECRET_KEY = env.str('SECRET_KEY', default='SECRET_KEY')
@@ -69,6 +71,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env.str('POSTGRES_DB', default='django'),
+        'USER': env.str('POSTGRES_USER', 'django'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD', default=''),
+        'HOST': env.str('DB_HOST', default=''),
+        'PORT': env.int('DB_PORT', default=5432)
+    }
+}
 
 AUTH_USER_MODEL = "users.User"
 
@@ -98,23 +110,13 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'collected_static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+CSV_DIR = os.path.join(BASE_DIR, 'data')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.str('POSTGRES_DB', default='django'),
-        'USER': env.str('POSTGRES_USER', 'django'),
-        'PASSWORD': env.str('POSTGRES_PASSWORD', default=''),
-        'HOST': env.str('DB_HOST', default=''),
-        'PORT': env.int('DB_PORT', default=5432)
-    }
-}
 
 
 REST_FRAMEWORK = {
