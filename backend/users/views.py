@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
 from subscriptions.models import Subscription
 from subscriptions.serializers import (ListSubscriptionsSerialaizer,
                                        SubscriptionsGetSerializer)

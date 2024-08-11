@@ -1,7 +1,6 @@
-from rest_framework import viewsets
-
 from ingredients.models import Ingredient
 from ingredients.serializer import IngredientsSerializer
+from rest_framework import viewsets
 from utils.filters import NameFilter
 
 
