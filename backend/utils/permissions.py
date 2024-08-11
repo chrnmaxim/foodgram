@@ -17,38 +17,10 @@ class CustomPermissions(BasePermission):
 class RecipePermissions(BasePermission):
     """Ограничение для эндпоинтов `recipes`."""
 
-    def has_permission(self, request, view):
-        return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_authenticated
-        )
-
     def has_object_permission(self, request, view, obj):
         return (
             request.method in permissions.SAFE_METHODS
-            or request.user.is_admin
-            or request.user.is_moderator
+            or request.user.is_superuser
             or obj.author == request.user
+            or request.user.is_authenticated
         )
-
-
-
-# class IsAdminOrOwnerOrReadOnly(permissions.BasePermission):
-#     """
-#     Разрешены только безопасные методы,
-#     а также доступ суперпользователю или автору объекта.
-#     """
-
-#     def has_permission(self, request, view):
-#         return (
-#             request.method in permissions.SAFE_METHODS
-#             or request.user.is_authenticated
-#         )
-
-#     def has_object_permission(self, request, view, obj):
-#         return (
-#             request.method in permissions.SAFE_METHODS
-#             or request.user.is_admin
-#             or request.user.is_moderator
-#             or obj.author == request.user
-#         )

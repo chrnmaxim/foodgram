@@ -29,7 +29,9 @@ class RecipesViewSet(viewsets.ModelViewSet):
     permission_classes = [RecipePermissions]
 
     def get_serializer_class(self):
-        if self.action in ['list', 'retrieve']:
+        """Переопределение сериализатора в зависимости от запроса."""
+
+        if self.action in ('list', 'retrieve'):
             return RecipesSerializerGet
         return RecipesSerializer
 
@@ -37,8 +39,11 @@ class RecipesViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=['GET'],
         pagination_class=None,
+        permission_classes=[IsAuthenticated],
     )
     def download_shopping_cart(self, request):
+        """Скачивание списка покупок."""
+
         user = request.user
         if not user.user_shopping.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -65,11 +70,11 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=[
-            IsAuthenticated,
-        ],
+        permission_classes=[IsAuthenticated],
     )
     def shopping_cart(self, request, pk):
+        """Добавляет / удаляет рецепт в список покупок."""
+
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
         shopping_cart = ShoppingCartIngredients.objects.filter(
@@ -95,6 +100,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
         ],
     )
     def favorite(self, request, pk):
+        """Добавляет рецепт в избранное."""
+
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
         shopping_cart = Favorite.objects.filter(user=user.id, recipe=recipe)
@@ -117,6 +124,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
         url_path='get-link',
     )
     def get_link(self, request, pk):
+        """Формирует короткую ссылку на рецепт."""
+
         get_object_or_404(Recipe, id=pk)
         link = request.build_absolute_uri(f'/recipes/{pk}/')
         return Response({'short-link': link}, status=status.HTTP_200_OK)
