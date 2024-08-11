@@ -1,6 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.db import transaction
-from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 

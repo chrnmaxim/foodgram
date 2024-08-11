@@ -2,10 +2,8 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
-from utils.permissions import RecipePermissions
 from subscriptions.models import Subscription
 from subscriptions.serializers import (ListSubscriptionsSerialaizer,
                                        SubscriptionsGetSerializer)

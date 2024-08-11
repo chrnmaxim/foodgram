@@ -1,11 +1,12 @@
-import os
 import csv
+import os
+
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.db import IntegrityError
-from tags.models import Tag
-from ingredients.models import Ingredient, Unit
 
+from ingredients.models import Ingredient, Unit
+from tags.models import Tag
 
 DATA_FORMAT = {
     'measurement_unit': 'measurement_unit_id',
@@ -48,7 +49,9 @@ class Command(BaseCommand):
             )
         except (ValueError, IntegrityError) as error:
             self.stdout.write(
-                self.style.ERROR(f'Ошибка данных в файле ingredients.csv . {error}.')
+                self.style.ERROR(
+                    f'Ошибка данных в файле ingredients.csv . {error}.'
+                )
             )
         else:
             self.stdout.write(

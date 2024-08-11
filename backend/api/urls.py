@@ -6,7 +6,6 @@ from recipes.views import RecipesViewSet
 from tags.views import TagsViewSet
 from users.views import CustomUsersViewSet
 
-
 app_name = 'api'
 
 router_v1 = DefaultRouter()
