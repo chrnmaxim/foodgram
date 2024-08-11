@@ -64,9 +64,6 @@ class UserManager(BaseUserManager):
 class User(AbstractUser, PermissionsMixin):
     """Кастомная модель пользователя."""
 
-    ADMIN = 'admin'
-    USER = 'user'
-    ROLE_CHOICES = ((USER, 'Пользователь'), (ADMIN, 'Администратор'))
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
@@ -75,11 +72,10 @@ class User(AbstractUser, PermissionsMixin):
     first_name = models.CharField(
         'Имя',
         max_length=settings.MAX_FIELD_LENGTH,
-        unique=True,
-        error_messages={'unique': 'Имя пользователя уже существует.'},
     )
     last_name = models.CharField(
-        'Фамилия', max_length=settings.MAX_FIELD_LENGTH
+        'Фамилия',
+        max_length=settings.MAX_FIELD_LENGTH
     )
     username = models.CharField(
         'Имя пользователя',
@@ -95,12 +91,7 @@ class User(AbstractUser, PermissionsMixin):
     email = models.EmailField(
         'Адрес электронной почты',
         validators=[validate_email],
-        unique=True)
-    role = models.CharField(
-        'Роль',
-        max_length=max(len(role) for role, _ in ROLE_CHOICES),
-        choices=ROLE_CHOICES,
-        default=USER,
+        unique=True
     )
     avatar = models.ImageField(
         upload_to='users/images/',
@@ -122,12 +113,3 @@ class User(AbstractUser, PermissionsMixin):
         """Определяет отображение имени пользователя в админ-панели."""
 
         return self.username[: settings.ADMIN_CHARS_LIMIT]
-
-    @property
-    def is_admin(self):
-        """
-        Проверяет, является ли пользователь администратором
-        или суперпользователем.
-        """
-
-        return self.role == self.ADMIN or self.is_superuser or self.is_staff

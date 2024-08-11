@@ -2,9 +2,10 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
+from utils.permissions import RecipePermissions
 from subscriptions.models import Subscription
 from subscriptions.serializers import (ListSubscriptionsSerialaizer,
                                        SubscriptionsGetSerializer)
@@ -24,11 +25,11 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
 
     @action(
         detail=False,
-        methods=['GET'],
-        permission_classes=[IsAuthenticated],
         url_path='me',
     )
     def me(self, request):
+        """Возвращает информацию о текущем пользователе."""
+
         serializer = UserCustomSerializer(
             request.user, context={"request": request}
         )
@@ -37,11 +38,12 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
     @action(
         detail=False,
         methods=['PUT', 'DELETE'],
-        permission_classes=(IsAuthenticated,),
         url_path='me/avatar',
         serializer_class=UserAvatarSerializer,
     )
     def avatar(self, request):
+        """Загрузка и удаления аватара пользователя."""
+
         if request.method == 'PUT':
             if request.data:
                 serializer = self.get_serializer(
@@ -61,12 +63,13 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
     @action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=(IsAuthenticated,),
         serializer_class=ListSubscriptionsSerialaizer,
         pagination_class=PageLimitPagination,
     )
     def subscribe(self, request, pk=None):
-        user = request.user
+        """Оформляет подписку на другого пользователя."""
+
+        user = self.request.user
         author = get_object_or_404(User, id=pk)
         subscribe = Subscription.objects.filter(
             user=user.id, author=author.id
@@ -89,12 +92,12 @@ class CustomUsersViewSet(viewsets.GenericViewSet):
 
     @action(
         detail=False,
-        methods=['GET'],
-        permission_classes=(IsAuthenticated,),
         pagination_class=PageLimitPagination,
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(following__user=request.user)
+        """Возвращает подписки пользователя."""
+
+        queryset = User.objects.filter(following__user=self.request.user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscriptionsGetSerializer(
             pages, many=True, context={'request': request}
