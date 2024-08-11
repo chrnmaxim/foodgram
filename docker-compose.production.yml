@@ -18,7 +18,7 @@ services:
       retries: 5
 
   backend:
-    build: chrnmaxim/foodgram_backend:latest
+    image: chrnmaxim/foodgram_backend:latest
     env_file: .env
     volumes: 
       - static:/backend_static
@@ -29,13 +29,13 @@ services:
         
   frontend:
     env_file: .env
-    build: chrnmaxim/foodgram_frontend:latest
+    image: chrnmaxim/foodgram_frontend:latest
     command: cp -r /app/build/. /frontend_static/
     volumes:
       - static:/frontend_static
 
   gateway:
-    build: chrnmaxim/foodgram_gateway:latest
+    image: chrnmaxim/foodgram_gateway:latest
     volumes:
       - static:/staticfiles/
       - media:/media/
