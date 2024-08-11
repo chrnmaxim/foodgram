@@ -1,0 +1,45 @@
+version: '3.9'
+
+volumes:
+  pg_data_production:
+  static:
+  media:
+
+services:
+  db:
+    image: postgres:14.6
+    env_file: .env
+    volumes:
+      - pg_data_production:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: chrnmaxim/foodgram_backend:latest
+    env_file: .env
+    volumes: 
+      - static:/backend_static
+      - media:/media/
+    depends_on:
+      db:
+        condition: service_healthy
+        
+  frontend:
+    env_file: .env
+    build: chrnmaxim/foodgram_frontend:latest
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+
+  gateway:
+    build: chrnmaxim/foodgram_gateway:latest
+    volumes:
+      - static:/staticfiles/
+      - media:/media/
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
