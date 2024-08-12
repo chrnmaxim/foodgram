@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -63,8 +64,18 @@ class RecipesSerializer(serializers.ModelSerializer):
         slug_field='id', queryset=Tag.objects.all(), many=True, required=True
     )
     cooking_time = serializers.IntegerField(
-        min_value=settings.MIN_AMOUNT_VALUE,
-        max_value=settings.MAX_AMOUNT_VALUE,
+        validators=[
+            MinValueValidator(
+                settings.MIN_COOKING_TIME,
+                message=('Время приготовления не может быть менее '
+                         f'{settings.MIN_COOKING_TIME} минуты.')
+            ),
+            MaxValueValidator(
+                settings.MAX_COOKING_TIME,
+                message=('Время приготовления не может быть более '
+                         f'{settings.MAX_COOKING_TIME / 60} часов.')
+            ),
+        ],
     )
 
     class Meta:
