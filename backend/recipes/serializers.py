@@ -1,12 +1,14 @@
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
-from favorite.models import Favorite
+from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+
 from ingredients.models import IngredientInRecipe
 from ingredients.serializer import (AddIngredientSerializer,
                                     ListIngredientsSerializer)
 from recipes.models import Recipe, ShoppingCartIngredients
-from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 from tags.models import Tag
 from tags.serializer import TagsSerializer
 from users.serializers import UserCustomSerializer
@@ -43,16 +45,13 @@ class RecipesSerializerGet(serializers.ModelSerializer):
         request = self.context['request']
         if request is None or request.user.is_anonymous:
             return False
-        return Favorite.objects.filter(user=request.user,
-                                       recipe=data.id).exists()
+        return data.recipe_favorite.exists()
 
     def get_is_in_shopping_cart(self, data):
         request = self.context['request']
         if request is None or request.user.is_anonymous:
             return False
-        return ShoppingCartIngredients.objects.filter(
-            user=request.user, recipe=data.id
-        ).exists()
+        return data.recipe_download.exists()
 
 
 class RecipesSerializer(serializers.ModelSerializer):
@@ -62,6 +61,20 @@ class RecipesSerializer(serializers.ModelSerializer):
     ingredients = AddIngredientSerializer(many=True)
     tags = serializers.SlugRelatedField(
         slug_field='id', queryset=Tag.objects.all(), many=True, required=True
+    )
+    cooking_time = serializers.IntegerField(
+        validators=[
+            MinValueValidator(
+                settings.MIN_COOKING_TIME,
+                message=('Время приготовления не может быть менее '
+                         f'{settings.MIN_COOKING_TIME} минуты.')
+            ),
+            MaxValueValidator(
+                settings.MAX_COOKING_TIME,
+                message=('Время приготовления не может быть более '
+                         f'{settings.MAX_COOKING_TIME / 60} часов.')
+            ),
+        ],
     )
 
     class Meta:
@@ -95,18 +108,15 @@ class RecipesSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = super().update(instance, validated_data)
         if ingredients:
-            recipe.ingredients.clear()
-            self.list_ingredients_create(ingredients, recipe)
+            instance.ingredients.clear()
+            self.list_ingredients_create(ingredients, instance)
         if tags:
-            recipe.tags.clear()
-            recipe.tags.set(tags)
-        return recipe
+            instance.tags.clear()
+            instance.tags.set(tags)
+        return super().update(instance, validated_data)
 
     def validate(self, value):
-        if not value.get('image'):
-            raise serializers.ValidationError('Изображение не добавлено.')
         tags = value.get('tags')
         ingredients = value.get('ingredients')
         if not tags:
@@ -123,6 +133,11 @@ class RecipesSerializer(serializers.ModelSerializer):
         return value
 
     def list_ingredients_create(self, ingredients, recipe):
+        """
+        Привязывает ингредиенты к рецепту.
+
+        В случае удаления части ингредиентов, удаляет их из БД.
+        """
         IngredientInRecipe.objects.bulk_create(
             [
                 IngredientInRecipe(
@@ -131,8 +146,28 @@ class RecipesSerializer(serializers.ModelSerializer):
                     amount=ingredient['amount'],
                 )
                 for ingredient in ingredients
+                if not IngredientInRecipe.objects.filter(
+                    ingredient=ingredient['id'], recipe=recipe
+                ).exists()
             ]
         )
+
+        ingredients_created = [ingredient['id'].id for ingredient
+                               in ingredients]
+
+        ingredients_db = list(IngredientInRecipe.objects.filter(
+            recipe=recipe
+        ).values_list(
+            'ingredient',
+            flat=True
+        ))
+
+        for ingredient in ingredients_db:
+            if ingredient not in ingredients_created:
+                IngredientInRecipe.objects.filter(
+                    ingredient=ingredient,
+                    recipe=recipe
+                ).delete()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):

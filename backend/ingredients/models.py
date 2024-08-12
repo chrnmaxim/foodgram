@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
@@ -44,7 +45,7 @@ class Ingredient(models.Model):
 
         verbose_name = 'ингредиент'
         verbose_name_plural = 'Ингредиенты'
-        ordering = ['name']
+        ordering = ('name',)
 
     def __str__(self):
         return self.name[: settings.ADMIN_CHARS_LIMIT]
@@ -66,14 +67,28 @@ class IngredientInRecipe(models.Model):
         related_name='ingredients_in_recipe',
         verbose_name='Рецепт',
     )
-    amount = models.PositiveIntegerField('Количество')
+    amount = models.PositiveSmallIntegerField(
+        'Количество',
+        validators=[
+            MinValueValidator(
+                settings.MIN_AMOUNT_VALUE,
+                message=('Количество игредиентов не может быть '
+                         f'меньше{settings.MIN_AMOUNT_VALUE}.')
+            ),
+            MaxValueValidator(
+                settings.MAX_AMOUNT_VALUE,
+                message=('Количество игредиентов не может быть '
+                         f'больше {settings.MAX_AMOUNT_VALUE}.')
+            ),
+        ],
+    )
 
     class Meta:
         """Внутренний класс модели ингридиентов в рецептах."""
 
         verbose_name = 'ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецептах'
-        ordering = ['ingredient']
+        ordering = ('ingredient',)
 
     def __str__(self):
         """Определяет отображение ингридиентов в рецептах в админ-панели."""

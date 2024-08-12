@@ -15,6 +15,7 @@ DEBUG = env.bool('DEBUG', default=False)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default='localhost')
 
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default='localhost')
 
 INSTALLED_APPS = [
     # Django
@@ -143,3 +144,7 @@ DJOSER = {
 MAX_FIELD_LENGTH: int = 255
 ADMIN_CHARS_LIMIT: int = 30
 PAGE_SIZE_PAGINATION: int = 5
+MIN_AMOUNT_VALUE: int = 1
+MAX_AMOUNT_VALUE: int = 32000
+MIN_COOKING_TIME: int = 1
+MAX_COOKING_TIME: int = 60 * 48

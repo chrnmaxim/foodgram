@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
-from recipes.serializers import ShortRecipeSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
+
+from recipes.serializers import ShortRecipeSerializer
 from subscriptions.models import Subscription
 from users.serializers import UserCustomSerializer
 

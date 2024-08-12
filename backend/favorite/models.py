@@ -18,11 +18,13 @@ class Favorite(models.Model):
     )
 
     class Meta:
+        """Внутренний класс модели избранных рецептов."""
         verbose_name = 'избранное'
         verbose_name_plural = 'Избранное'
         ordering = ('-id',)
 
     def __str__(self):
+        """Определяет отображение рецепта в админ-панели."""
         return (
             f'{self.user.username} добавил в ' f'избранное {self.recipe.name}'
         )
