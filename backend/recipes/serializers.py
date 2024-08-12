@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -44,16 +45,13 @@ class RecipesSerializerGet(serializers.ModelSerializer):
         request = self.context['request']
         if request is None or request.user.is_anonymous:
             return False
-        return Favorite.objects.filter(user=request.user,
-                                       recipe=data.id).exists()
+        return data.recipe_favorite.exists()
 
     def get_is_in_shopping_cart(self, data):
         request = self.context['request']
         if request is None or request.user.is_anonymous:
             return False
-        return ShoppingCartIngredients.objects.filter(
-            user=request.user, recipe=data.id
-        ).exists()
+        return data.recipe_download.exists()
 
 
 class RecipesSerializer(serializers.ModelSerializer):
@@ -63,6 +61,10 @@ class RecipesSerializer(serializers.ModelSerializer):
     ingredients = AddIngredientSerializer(many=True)
     tags = serializers.SlugRelatedField(
         slug_field='id', queryset=Tag.objects.all(), many=True, required=True
+    )
+    cooking_time = serializers.IntegerField(
+        min_value=settings.MIN_AMOUNT_VALUE,
+        max_value=settings.MAX_AMOUNT_VALUE,
     )
 
     class Meta:

@@ -77,9 +77,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
-        shopping_cart = ShoppingCartIngredients.objects.filter(
-            user=user.id, recipe=recipe
-        )
+        shopping_cart = recipe.recipe_download.exists()
         if request.method == 'POST':
             serializer = ShoppingCartIngredientsSerializer(
                 data={'user': user.id, 'recipe': recipe.id}
@@ -104,7 +102,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
-        shopping_cart = Favorite.objects.filter(user=user.id, recipe=recipe)
+        favorite = recipe.recipe_favorite.exists()
         if request.method == 'POST':
             serializer = FavoriteSerializer(
                 data={'user': user.id, 'recipe': recipe.id}
@@ -112,8 +110,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if shopping_cart.exists():
-            shopping_cart.delete()
+        if favorite.exists():
+            favorite.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
