@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import serializers
 
 from ingredients.models import Ingredient, IngredientInRecipe
@@ -35,11 +36,14 @@ class AddIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор количества ингредиентов в рецептах."""
 
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(
+        min_value=settings.MIN_AMOUNT_VALUE,
+        max_value=settings.MAX_AMOUNT_VALUE,
+    )
 
     class Meta:
         model = IngredientInRecipe
-        fields = ("id", "amount")
+        fields = ('id', 'amount')
 
     def validate(self, data):
         if data['amount'] < 1:

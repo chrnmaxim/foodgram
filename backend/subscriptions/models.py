@@ -19,6 +19,11 @@ class Subscription(models.Model):
     )
 
     class Meta:
+        """
+        Внутренний класс модели подписки на пользователя
+        для отображения в админ-панели.
+        """
+
         verbose_name = 'подписка'
         verbose_name_plural = 'Подписки'
         ordering = ('-id',)
@@ -36,4 +41,6 @@ class Subscription(models.Model):
         ]
 
     def __str__(self):
+        """Определяет отображение модели в админ-панели."""
+
         return f'{self.user} подписан на {self.author}'

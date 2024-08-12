@@ -42,15 +42,18 @@ class Recipe(models.Model):
         ],
     )
 
-    cooking_time = models.PositiveIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления, мин',
         validators=[
             MinValueValidator(
-                1, message='Время приготовления не может быть менее 1 минуты.'
+                settings.MIN_COOKING_TIME,
+                message=('Время приготовления не может быть менее '
+                         f'{settings.MIN_COOKING_TIME} минуты.')
             ),
             MaxValueValidator(
-                60 * 48,
-                message='Время приготовления не может быть более 2-х суток.',
+                settings.MAX_COOKING_TIME,
+                message=('Время приготовления не может быть более '
+                         f'{settings.MAX_COOKING_TIME / 60} часов.')
             ),
         ],
         db_index=True,
@@ -88,5 +91,16 @@ class ShoppingCartIngredients(models.Model):
     )
 
     class Meta:
+        """
+        Внутренний класс модели рецептов в списке покупок
+        для отображения в админ-панели.
+        """
+
         verbose_name = 'рецепт в списке покупок'
         verbose_name_plural = 'Рецепты в списке покупок'
+        ordering = ('recipe',)
+
+    def __str__(self):
+        """Определяет отображение модели в админ-панели."""
+
+        return f'{self.user} - {self.recipe}'[:settings.ADMIN_CHARS_LIMIT]
