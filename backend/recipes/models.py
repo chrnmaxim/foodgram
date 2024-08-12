@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.validators import (FileExtensionValidator, MaxValueValidator,
                                     MinValueValidator)
 from django.db import models
+
 from ingredients.models import IngredientInRecipe
 from tags.models import Tag
 
