@@ -109,18 +109,15 @@ class RecipesSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = super().update(instance, validated_data)
         if ingredients:
-            recipe.ingredients.clear()
-            self.list_ingredients_create(ingredients, recipe)
+            instance.ingredients.clear()
+            self.list_ingredients_create(ingredients, instance)
         if tags:
-            recipe.tags.clear()
-            recipe.tags.set(tags)
-        return recipe
+            instance.tags.clear()
+            instance.tags.set(tags)
+        return super().update(instance, validated_data)
 
     def validate(self, value):
-        if not value.get('image'):
-            raise serializers.ValidationError('Изображение не добавлено.')
         tags = value.get('tags')
         ingredients = value.get('ingredients')
         if not tags:
@@ -137,6 +134,11 @@ class RecipesSerializer(serializers.ModelSerializer):
         return value
 
     def list_ingredients_create(self, ingredients, recipe):
+        """
+        Привязывает ингредиенты к рецепту.
+
+        В случае удаления части ингредиентов, удаляет их из БД.
+        """
         IngredientInRecipe.objects.bulk_create(
             [
                 IngredientInRecipe(
@@ -145,8 +147,28 @@ class RecipesSerializer(serializers.ModelSerializer):
                     amount=ingredient['amount'],
                 )
                 for ingredient in ingredients
+                if not IngredientInRecipe.objects.filter(
+                    ingredient=ingredient['id'], recipe=recipe
+                ).exists()
             ]
         )
+
+        ingredients_created = [ingredient['id'].id for ingredient
+                               in ingredients]
+
+        ingredients_db = list(IngredientInRecipe.objects.filter(
+            recipe=recipe
+        ).values_list(
+            'ingredient',
+            flat=True
+        ))
+
+        for ingredient in ingredients_db:
+            if ingredient not in ingredients_created:
+                IngredientInRecipe.objects.filter(
+                    ingredient=ingredient,
+                    recipe=recipe
+                ).delete()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
