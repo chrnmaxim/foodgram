@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """
-        Загружает данные в БД из `csv` файла.
+        Загружает ингредиенты и теги в БД из `csv` файла.
 
         Для запуска команды выполнить:
         'python manage.py load_csv'.
@@ -55,7 +55,7 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(
-                self.style.SUCCESS('Все данные успешно загружены.')
+                self.style.SUCCESS('Все ингредиенты успешно загружены.')
             )
 
         try:
@@ -80,5 +80,5 @@ class Command(BaseCommand):
             )
         else:
             self.stdout.write(
-                self.style.SUCCESS('Все данные успешно загружены.')
+                self.style.SUCCESS('Все теги успешно загружены.')
             )
