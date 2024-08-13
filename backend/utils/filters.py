@@ -8,7 +8,7 @@ from tags.models import Tag
 class NameFilter(FilterSet):
     """Фильтрация ингредиентов по имени."""
 
-    name = filters.CharFilter(field_name='name', lookup_expr='startswith')
+    name = filters.CharFilter(field_name='name', lookup_expr='istartswith')
 
     class Meta:
         model = Ingredient
