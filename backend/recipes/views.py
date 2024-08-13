@@ -76,7 +76,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
-        shopping_cart = recipe.recipe_download.exists()
+        shopping_cart = recipe.recipe_download.filter(user=user)
         if request.method == 'POST':
             serializer = ShoppingCartIngredientsSerializer(
                 data={'user': user.id, 'recipe': recipe.id}
@@ -101,7 +101,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
         recipe = get_object_or_404(Recipe, id=pk)
         user = get_object_or_404(User, id=request.user.id)
-        favorite = recipe.recipe_favorite.exists()
+        favorite = recipe.recipe_favorite.filter(user=user)
         if request.method == 'POST':
             serializer = FavoriteSerializer(
                 data={'user': user.id, 'recipe': recipe.id}
