@@ -14,12 +14,6 @@
 
 Документация `API` проекта в формате `Swagger UI` — https://foodgram-practicum.ddns.net/api/swagger/.
 
-> [!NOTE]
-> Для ознакомления с зоной администратора на время ревью создана временная учетная запись администратора:
-
-> * email: `adminreview@admin.com`
-> * password: `adminreview`
-
 ## Технологии:
 * Python 3.11
 * Django 5.0
